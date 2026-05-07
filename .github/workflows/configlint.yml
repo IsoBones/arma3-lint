@@ -1,0 +1,44 @@
+name: Config Lint
+
+# Lints Arma 3 mod config files (.cpp/.hpp/.cfg) on every push to main and on
+# every PR that touches config or the linter itself. Edit the paths below if
+# your addon source lives somewhere other than Addons/.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Addons/**/*.cpp'
+      - 'Addons/**/*.hpp'
+      - 'Addons/**/*.cfg'
+      - '.github/workflows/configlint.yml'
+      - 'tools/arma_lint.py'
+  pull_request:
+    paths:
+      - 'Addons/**/*.cpp'
+      - 'Addons/**/*.hpp'
+      - 'Addons/**/*.cfg'
+      - 'tools/arma_lint.py'
+
+jobs:
+  configlint:
+    name: Lint config files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      # The linter is a single stdlib-only Python script. No pip install.
+      #
+      # --no-warnings hides warnings entirely so they don't fail the build.
+      # Once you've cleaned up your existing warnings, replace --no-warnings
+      # with -W to make CI block on warnings too.
+      - name: Run arma_lint
+        run: python3 tools/arma_lint.py Addons --no-warnings
