@@ -1,0 +1,52 @@
+name: Self-test
+
+# Runs both linters against the example fixtures in examples/fixtures/.
+# Good fixtures must pass cleanly. Bad fixtures must produce specific errors.
+# This is the regression guard for the linters themselves — if a refactor
+# breaks a rule, this catches it immediately.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/**'
+      - 'examples/fixtures/**'
+      - '.github/workflows/self-test.yml'
+  pull_request:
+    paths:
+      - 'tools/**'
+      - 'examples/fixtures/**'
+      - '.github/workflows/self-test.yml'
+
+jobs:
+  good-fixtures-pass:
+    name: Good fixtures lint cleanly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Config linter on good fixtures
+        run: python3 tools/arma_lint.py examples/fixtures/good -W
+
+      - name: SQF linter on good fixtures
+        run: python3 tools/sqf_lint.py examples/fixtures/good -W
+
+  bad-fixtures-fail:
+    name: Bad fixtures produce errors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      # We expect non-zero exit codes here. The `!` inverts so the step
+      # passes when the linter correctly fails on the bad fixtures.
+      - name: Config linter must fail on bad fixtures
+        run: '! python3 tools/arma_lint.py examples/fixtures/bad'
+
+      - name: SQF linter must fail on bad fixtures
+        run: '! python3 tools/sqf_lint.py examples/fixtures/bad'
