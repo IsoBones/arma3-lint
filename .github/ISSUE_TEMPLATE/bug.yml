@@ -1,0 +1,36 @@
+name: Bug or false positive
+description: A linter is doing something wrong (false positive, missing detection, crash)
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did the linter do, and what should it have done?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal repro
+      description: Smallest config or SQF snippet that triggers the issue. Paste the file contents, not a screenshot.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command you ran
+      placeholder: "python3 tools/sqf_lint.py path/to/thing.sqf"
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Linter output
+      render: text
+  - type: input
+    id: pyver
+    attributes:
+      label: Python version
+      placeholder: "python3 --version"
