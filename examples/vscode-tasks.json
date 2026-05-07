@@ -1,0 +1,31 @@
+{
+    // Drop this in `.vscode/tasks.json` in your mod repo (merge with existing
+    // tasks if you have any). Then Ctrl+Shift+B will run both linters.
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Lint config",
+            "type": "shell",
+            "command": "python3",
+            "args": ["tools/arma_lint.py", "Addons"],
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "Lint SQF",
+            "type": "shell",
+            "command": "python3",
+            "args": ["tools/sqf_lint.py", "Addons"],
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "Lint all",
+            "dependsOn": ["Lint config", "Lint SQF"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

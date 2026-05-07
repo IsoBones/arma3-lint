@@ -1,0 +1,25 @@
+# Drop this in your repo root as `.pre-commit-config.yaml`, then:
+#   pip install pre-commit
+#   pre-commit install
+#
+# Both linters run on the relevant changed files before each commit.
+# Errors block the commit. Warnings don't (drop --no-warnings to see them).
+
+repos:
+  - repo: local
+    hooks:
+      - id: arma-config-lint
+        name: Arma 3 config lint
+        entry: python3 tools/arma_lint.py
+        language: system
+        files: '^Addons/.*\.(cpp|hpp|cfg)$'
+        pass_filenames: true
+        args: ['--no-warnings', '--quiet']
+
+      - id: arma-sqf-lint
+        name: Arma 3 SQF lint
+        entry: python3 tools/sqf_lint.py
+        language: system
+        files: '^Addons/.*\.sqf$'
+        pass_filenames: true
+        args: ['--no-warnings', '--quiet']

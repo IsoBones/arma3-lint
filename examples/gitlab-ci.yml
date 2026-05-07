@@ -1,0 +1,32 @@
+# Drop this in your repo root as `.gitlab-ci.yml`. Equivalent to the
+# GitHub Actions workflows for teams hosting on GitLab.
+
+stages:
+  - lint
+
+.python_setup: &python_setup
+  image: python:3.11-slim
+  before_script:
+    - python3 --version
+
+config-lint:
+  <<: *python_setup
+  stage: lint
+  script:
+    - python3 tools/arma_lint.py Addons --no-warnings
+  rules:
+    - changes:
+        - 'Addons/**/*.cpp'
+        - 'Addons/**/*.hpp'
+        - 'Addons/**/*.cfg'
+        - 'tools/arma_lint.py'
+
+sqf-lint:
+  <<: *python_setup
+  stage: lint
+  script:
+    - python3 tools/sqf_lint.py Addons --no-warnings
+  rules:
+    - changes:
+        - 'Addons/**/*.sqf'
+        - 'tools/sqf_lint.py'
